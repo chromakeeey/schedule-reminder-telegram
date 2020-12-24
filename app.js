@@ -16,6 +16,10 @@ i18n.configure({
     defaultLocale: 'en'
 })
 
+const {
+    onClickMenuButton
+} = require('./telegram/inlineButtons')
+
 const { createScheduleCmd } = require('./telegram/create_schedule.command');
 const { startCmd } = require('./telegram/start.command');
 const { countScheduleCmd } = require('./telegram/count_schedule.commmand');
@@ -45,8 +49,42 @@ bot.on('callback_query', message => {
 
         return true;
     }
+
+    if (answer[0] === 'schedule_view_owner') {
+        
+
+        return true;
+    }
 })
 
 bot.on('polling_error', (error) => {
     console.log(error.code);
+})
+
+bot.on('message', message => {
+    const chatId = message.chat.id;
+    const text = message.text;
+    const numberOfAction = Number(text.split('.')[0]);
+
+    switch (numberOfAction) {
+        case 1: {
+            onClickMenuButton(bot, chatId, 'account');
+            break;
+        }
+
+        case 2: {
+            onClickMenuButton(bot, chatId, 'schedules');
+            break;
+        }
+
+        case 3: {
+            onClickMenuButton(bot, chatId, 'subs');
+            break;
+        }
+
+        case 4: {
+            onClickMenuButton(bot, chatId, 'language');
+            break;
+        }
+    }
 })

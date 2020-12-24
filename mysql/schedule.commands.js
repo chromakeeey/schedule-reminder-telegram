@@ -50,15 +50,16 @@ const deleteLinkUserToSchedule = async (scheduleId, userId) => {
     return rows.affectedRows > 0;
 }
 
-const countUserSchedules = async (userId) => {
-    const [rows] = await connectionPool.query(`
-        SELECT COUNT(*) AS schedulesCount
-        FROM schedule 
-        WHERE creator_id = ?`,
-        userId
-    );
+const getUserSchedules = async (userId) => {
+    const sql = `
+        SELECT id, name
+        FROM schedule
+        WHERE creator_id = ?
+    `;
 
-    return rows[0].schedulesCount;
+    const [rows] = await connectionPool.query(sql, userId);
+
+    return rows;
 }
 
 module.exports = {
@@ -66,5 +67,5 @@ module.exports = {
     addSchedule,
     linkUserToSchedule,
     deleteLinkUserToSchedule,
-    countUserSchedules
+    getUserSchedules
 }
