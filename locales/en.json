@@ -1,0 +1,12 @@
+{
+	"Hello": "Hello",
+	"Hello %s": "Hello %s",
+	"StartNew %d": "You are for the first time in our system! Hello!\nYour unique identifier: %d.\n\nNow you can choose your language:",
+	"StartFound %d": "Your account was found in the system.\nYour unique identifier: %d.\n\nAlso, if you want, you can change the language:",
+	"new_language": "You have successfully changed your language to 🇬🇧 English",
+	"choose_action": "Choose an action:",
+	"my_account": "👤 My account",
+	"my_schedules": "🧾 My schedules",
+	"my_subs": "✅ My subscriptions",
+	"change_language": "🇬🇧 Change language"
+}
