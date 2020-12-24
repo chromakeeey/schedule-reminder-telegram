@@ -40,7 +40,7 @@ const onClickSchedulesButton = async (bot, chatId) => {
 
   if (schedules.length === 0) {
     bot.sendMessage(chatId, i18n.__('no_your_schedules'));
-
+              
     return;
   }
 
