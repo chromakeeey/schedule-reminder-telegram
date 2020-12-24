@@ -1,57 +1,86 @@
 const { connectionPool } = require('./connection');
 
 const isUserExists = async (userId) => {
-    const [rows] = await connectionPool.query('SELECT * FROM user WHERE chatid = ?', userId);
+  const [rows] = await connectionPool.query('SELECT * FROM user WHERE chatid = ?', userId);
 
-    return rows.length > 0;
-}
+  return rows.length > 0;
+};
 
 const addUser = async (user) => {
-    const sql = `
+  const sql = `
         INSERT INTO user
         (chatid, name)
         VALUES
         (?, ?)
     `;
 
-    const [rows] = await connectionPool.query(sql, [
-        user.chatid, 
-        user.name
-    ]);
+  const [rows] = await connectionPool.query(sql, [
+    user.chatid,
+    user.name,
+  ]);
 
-    return rows.affectedRows > 0;
-}
+  return rows.affectedRows > 0;
+};
 
 const getUserLocale = async (userId) => {
-    const sql = `
+  const sql = `
         SELECT language
         FROM user
         WHERE chatid = ?
     `;
 
-    const [rows] = await connectionPool.query(sql, userId);
+  const [rows] = await connectionPool.query(sql, userId);
 
-    return rows[0].language;
-}
+  return rows[0].language;
+};
 
 const setUserLocale = async (userId, locale) => {
-    const sql = `
+  const sql = `
         UPDATE user
         SET language = ?
         WHERE chatid = ?
     `;
 
-    const [rows] = await connectionPool.query(sql, [
-        locale,
-        userId
-    ]);
+  const [rows] = await connectionPool.query(sql, [
+    locale,
+    userId,
+  ]);
 
-    return rows.affectedRows > 0;
-}
+  return rows.affectedRows > 0;
+};
+
+const setChatState = async (userId, newState) => {
+  const sql = `
+        UPDATE user
+        SET chat_state = ?
+        WHERE chatid = ?
+    `;
+
+  const [rows] = await connectionPool.query(sql, [
+    newState,
+    userId,
+  ]);
+
+  return rows.affectedRows > 0;
+};
+
+const getChatState = async (userId) => {
+  const sql = `
+        SELECT chat_state
+        FROM user
+        WHERE chatid = ?
+    `;
+
+  const [rows] = await connectionPool.query(sql, userId);
+
+  return rows[0].chat_state;
+};
 
 module.exports = {
-    isUserExists,
-    addUser,
-    getUserLocale,
-    setUserLocale
-}
+  isUserExists,
+  addUser,
+  getUserLocale,
+  setUserLocale,
+  setChatState,
+  getChatState,
+};

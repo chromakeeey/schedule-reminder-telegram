@@ -18,5 +18,10 @@
     "mysql2": "^2.2.5",
     "node-telegram-bot-api": "^0.50.0",
     "nodemon": "^2.0.6"
+  },
+  "devDependencies": {
+    "eslint": "^7.16.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
   }
 }

@@ -9,6 +9,14 @@
 	"my_schedules": "2. My schedules 🧾",
 	"my_subs": "3. My subscriptions ✅",
 	"change_language": "4. Change language 🇬🇧",
+	"add_schedule": "5. Add schedule ➕",
 	"choose_your_schedule": "Choose one of your schedules:",
-	"no_your_schedules": "You haven't created any schedules yet.\n\n Choose 'Create schedule' from menu to create."
+	"no_your_schedules": "You haven't created any schedules yet.\n\n Choose 'Create schedule' from menu to create.",
+	"schedule_size_error": "Name size must be from 3 to 16 characters",
+	"success_create_schedule %s %d": "You have successfully created a schedule named: %s.\nUse a unique identifier to subscribe to a schedule: %d",
+	"enter_schedule_name": "Enter the name you need from 3 to 16 characters.",
+	"schedule_owner_menu %s %d": "You have selected a schedule named: %s.\nTo subscribe to it for other users, use a unique identifier %d and use it in the 'My subscriptions' item.\n\nChoose one of the actions:",
+	"edit_on_browser": "⚙️ Edit on browser",
+	"delete": "❌ Delete",
+	"schedule_wrong_id": "❌ Oh, something went wrong. Apparently the schedule has been deleted or changed."
 }
