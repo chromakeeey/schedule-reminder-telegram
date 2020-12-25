@@ -92,6 +92,15 @@ bot.on('message', async (message) => {
   const locale = await getUserLocale(chatId);
   i18n.setLocale(locale);
 
+  if (chatState !== 0 && text === '/end') {
+    await setChatState(chatId, 0);
+
+    await bot.sendMessage(chatId, i18n.__('undo_end'));
+    showMainMenu(bot, chatId);
+
+    return true;
+  }
+
   // imput schedule new name
   if (chatState === 1) {
     if (!(text.length >= 3 && text.length <= 16)) {

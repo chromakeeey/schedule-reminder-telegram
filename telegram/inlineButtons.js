@@ -40,7 +40,7 @@ const onClickSchedulesButton = async (bot, chatId) => {
 
   if (schedules.length === 0) {
     bot.sendMessage(chatId, i18n.__('no_your_schedules'));
-              
+
     return;
   }
 
@@ -57,7 +57,7 @@ const onClickSchedulesButton = async (bot, chatId) => {
 
   bot.sendMessage(chatId, i18n.__('choose_your_schedule'), {
     reply_markup: JSON.stringify({
-      inlineKeyboard,
+      inline_keyboard: inlineKeyboard,
     }),
   });
 };

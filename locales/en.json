@@ -14,9 +14,11 @@
 	"no_your_schedules": "You haven't created any schedules yet.\n\n Choose 'Create schedule' from menu to create.",
 	"schedule_size_error": "Name size must be from 3 to 16 characters",
 	"success_create_schedule %s %d": "You have successfully created a schedule named: %s.\nUse a unique identifier to subscribe to a schedule: %d",
-	"enter_schedule_name": "Enter the name you need from 3 to 16 characters.",
+	"enter_schedule_name": "Enter the name you need from 3 to 16 characters.\nTo cancel, enter /end",
 	"schedule_owner_menu %s %d": "You have selected a schedule named: %s.\nTo subscribe to it for other users, use a unique identifier %d and use it in the 'My subscriptions' item.\n\nChoose one of the actions:",
 	"edit_on_browser": "⚙️ Edit on browser",
 	"delete": "❌ Delete",
-	"schedule_wrong_id": "❌ Oh, something went wrong. Apparently the schedule has been deleted or changed."
+	"schedule_wrong_id": "❌ Oh, something went wrong. Apparently the schedule has been deleted or changed.",
+	"undo_end": "🟢 You have successfully canceled the action.",
+	"undo_error": "undo_error"
 }
