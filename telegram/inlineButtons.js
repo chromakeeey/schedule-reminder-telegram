@@ -4,6 +4,9 @@ const i18n = require('i18n');
 const {
   getUserLocale,
   setChatState,
+  getUser,
+  getCountSchedules,
+  getCountSubscriptions,
 } = require('../mysql/user.command');
 
 const {
@@ -31,7 +34,19 @@ const showMainMenu = async (bot, chatId) => {
 };
 
 const onClickAccountButton = async (bot, chatId) => {
-  //
+  const locale = await getUserLocale(chatId);
+  i18n.setLocale(locale);
+
+  const user = await getUser(chatId);
+  const countSchedules = await getCountSchedules(chatId);
+  const countSubscriptions = await getCountSubscriptions(chatId);
+
+  bot.sendMessage(chatId,
+    i18n.__('account_information %s %s %d %d',
+      user.name,
+      user.created_at.toUTCString(),
+      countSchedules,
+      countSubscriptions));
 };
 
 const onClickSchedulesButton = async (bot, chatId) => {
@@ -156,6 +171,8 @@ const onClickMenuButton = (bot, chatId, button) => {
 
     default: return false;
   }
+
+  return true;
 };
 
 module.exports = {

@@ -120,6 +120,12 @@ bot.on('message', async (message) => {
 
   // imput schedule new name
   if (chatState === 1) {
+    if (text[0] === '/') {
+      bot.sendMessage(chatId, i18n.__('/_error'));
+
+      return false;
+    }
+
     if (!(text.length >= 3 && text.length <= 16)) {
       bot.sendMessage(chatId, i18n.__('schedule_size_error'));
     } else {

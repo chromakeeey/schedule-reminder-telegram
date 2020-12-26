@@ -6,6 +6,20 @@ const isUserExists = async (userId) => {
   return rows.length > 0;
 };
 
+const getUser = async (userId) => {
+  const sql = `
+    SELECT * FROM user
+    WHERE
+      chatid = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    userId,
+  ]);
+
+  return rows[0];
+};
+
 const addUser = async (user) => {
   const sql = `
         INSERT INTO user
@@ -76,11 +90,50 @@ const getChatState = async (userId) => {
   return rows[0].chat_state;
 };
 
+const getCountSchedules = async (userId) => {
+  const sql = `
+    SELECT COUNT(*)
+    AS 
+      schedule_count
+    FROM
+      schedule
+    WHERE
+      creator_id = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    userId,
+  ]);
+
+  return rows[0].schedule_count;
+};
+
+const getCountSubscriptions = async (userId) => {
+  const sql = `
+    SELECT COUNT(*)
+    AS 
+      subscription_count
+    FROM
+      schedule_subscription
+    WHERE
+      user_id = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    userId,
+  ]);
+
+  return rows[0].subscription_count;
+};
+
 module.exports = {
   isUserExists,
   addUser,
+  getUser,
   getUserLocale,
   setUserLocale,
   setChatState,
   getChatState,
+  getCountSchedules,
+  getCountSubscriptions,
 };
