@@ -20,5 +20,11 @@
 	"delete": "❌ Delete",
 	"schedule_wrong_id": "❌ Oh, something went wrong. Apparently the schedule has been deleted or changed.",
 	"undo_end": "🟢 You have successfully canceled the action.",
-	"undo_error": "undo_error"
+	"my_subs_message %d": "The number of schedules you are subscribed to: %d.\n\nYou can also subscribe to a new one by clicking the 'Subscribe to a new schedule' button or by choosing the desired option from the list below:",
+	"add_new_sub": "➕ Subscribe to a new schedule",
+	"only_int": "❌ The value must only be of numeric type without a period.",
+	"no_schedule_found": "❌ Oops, no schedule with this ID was found. Try entering another.",
+	"already_subscribe": "❌ You are already subscribed to this schedule.",
+	"enter_schedule_id": "Enter a unique identifier for the schedule:",
+	"success_subscribe": "✅ You have successfully subscribed to the schedule.\nNow you will receive a notification about the start of classes, schedule news and other information."
 }

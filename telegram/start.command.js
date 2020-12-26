@@ -10,6 +10,7 @@ const {
 } = require('./inlineButtons');
 
 const startCmd = async (bot, message) => {
+  console.log(message);
   const chatId = message.chat.id;
 
   const messageOptions = {

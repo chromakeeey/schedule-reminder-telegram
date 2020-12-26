@@ -30,6 +30,9 @@ const {
 
 const {
   addSchedule,
+  checkIfScheduleExists,
+  checkIfUserSubscribeToSchedule,
+  subscribeToSchedule,
 } = require('./mysql/schedule.commands');
 
 const {
@@ -58,7 +61,7 @@ bot.onText(/\/start/, (message) => startCmd(bot, message));
 bot.onText(/\/count_schedule/, (message) => countScheduleCmd(bot, message));
 bot.onText(/\/language/, (message) => languageCmd(bot, message));
 
-bot.on('callback_query', (message) => {
+bot.on('callback_query', async (message) => {
   const answer = message.data.split(':');
   const chatId = message.message.chat.id;
 
@@ -73,6 +76,20 @@ bot.on('callback_query', (message) => {
     showScheduleByOwner(bot, chatId, scheduleId);
 
     return true;
+  }
+
+  if (answer[0] === 'subscription') {
+    if (answer[1] === 'add') {
+      await setChatState(chatId, 2);
+
+      const buttons = {
+        reply_markup: JSON.stringify({
+          hide_keyboard: true,
+        }),
+      };
+
+      bot.sendMessage(chatId, i18n.__('enter_schedule_id'), buttons);
+    }
   }
 
   return true;
@@ -116,6 +133,38 @@ bot.on('message', async (message) => {
       await setChatState(chatId, 0);
       showMainMenu(bot, chatId);
     }
+
+    return true;
+  }
+
+  // imput schedule id (subscription)
+  if (chatState === 2) {
+    const scheduleId = parseInt(text, 10);
+
+    if (Number.isNaN(scheduleId)) {
+      bot.sendMessage(chatId, i18n.__('only_int'));
+
+      return false;
+    }
+
+    const ifScheduleExists = await checkIfScheduleExists(scheduleId);
+    if (!ifScheduleExists) {
+      bot.sendMessage(chatId, i18n.__('no_schedule_found'));
+
+      return false;
+    }
+
+    const ifAlreadySubscribe = await checkIfUserSubscribeToSchedule(chatId, scheduleId);
+    if (ifAlreadySubscribe) {
+      bot.sendMessage(chatId, i18n.__('already_subscribe'));
+
+      return false;
+    }
+
+    await setChatState(chatId, 0);
+    await subscribeToSchedule(chatId, scheduleId);
+    bot.sendMessage(chatId, i18n.__('success_subscribe'));
+    showMainMenu(bot, chatId);
 
     return true;
   }

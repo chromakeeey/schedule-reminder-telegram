@@ -8,6 +8,7 @@ const {
 
 const {
   getUserSchedules,
+  getUserSubscriptions,
 } = require('../mysql/schedule.commands');
 
 const showMainMenu = async (bot, chatId) => {
@@ -63,7 +64,32 @@ const onClickSchedulesButton = async (bot, chatId) => {
 };
 
 const onClickSubsButton = async (bot, chatId) => {
-  //
+  const subscriptions = await getUserSubscriptions(chatId);
+  const locale = await getUserLocale(chatId);
+  i18n.setLocale(locale);
+
+  const inlineKeyboard = [];
+  subscriptions.forEach((subscription) => {
+    inlineKeyboard.push([
+      {
+        text: subscription.name,
+        callback_data: `sub_view:${subscription.schedule_id}`,
+      },
+    ]);
+  });
+
+  inlineKeyboard.push([
+    {
+      text: i18n.__('add_new_sub'),
+      callback_data: 'subscription:add',
+    },
+  ]);
+
+  bot.sendMessage(chatId, i18n.__('my_subs_message %d', subscriptions.length), {
+    reply_markup: JSON.stringify({
+      inline_keyboard: inlineKeyboard,
+    }),
+  });
 };
 
 const onClickLanguageButton = (bot, chatId) => {
