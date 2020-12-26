@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 require('dotenv').config();
+require('express-async-errors');
 
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
@@ -40,6 +41,10 @@ const {
 
 } = require('./telegram/schedule');
 
+const {
+  createToken,
+} = require('./mysql/auth.commands');
+
 const { createScheduleCmd } = require('./telegram/create_schedule.command');
 const { startCmd } = require('./telegram/start.command');
 const { countScheduleCmd } = require('./telegram/count_schedule.commmand');
@@ -48,8 +53,24 @@ const { languageCmd, onLanguageCallback } = require('./telegram/language.command
 app.use(express.json({ extended: true }));
 app.use(cors());
 
+app.use('/', require('./routes/auth.route'));
+
 app.get('/', (req, res) => {
   res.end('telegram.bot.schedule.reminder.2020');
+});
+
+app.use((err, req, res, next) => {
+  if (err.isOperational) {
+    res.status(err.statusCode).json({
+      message: err.message,
+    });
+  } else {
+    res.status(500).json({
+      message: 'Something went wrong.',
+    });
+  }
+
+  next(err);
 });
 
 app.listen(process.env.PORT, () => {
@@ -60,6 +81,13 @@ bot.onText(/\/create_schedule (.+)/, (message, match) => createScheduleCmd(bot, 
 bot.onText(/\/start/, (message) => startCmd(bot, message));
 bot.onText(/\/count_schedule/, (message) => countScheduleCmd(bot, message));
 bot.onText(/\/language/, (message) => languageCmd(bot, message));
+
+bot.onText(/\/token/, async (message) => {
+  const chatId = message.chat.id;
+  const unicalToken = await createToken(chatId);
+
+  bot.sendMessage(chatId, unicalToken);
+});
 
 bot.on('callback_query', async (message) => {
   const answer = message.data.split(':');
