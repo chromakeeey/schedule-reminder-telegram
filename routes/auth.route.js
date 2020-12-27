@@ -4,6 +4,7 @@ const { Router } = require('express');
 const { param } = require('express-validator');
 
 const jwt = require('jsonwebtoken');
+const jwtVerify = require('../middlewares/jwtVerify');
 
 const {
   isValidToken,
@@ -12,6 +13,14 @@ const {
 } = require('../mysql/auth.commands');
 
 const router = Router();
+
+router.get('/jwt_test', jwtVerify, async (req, res) => {
+  console.log(req.user);
+
+  res.status(200).json({
+    message: 'All working!',
+  });
+});
 
 router.get('/auth/:token', [
   param('token')
