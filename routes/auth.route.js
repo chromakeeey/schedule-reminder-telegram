@@ -22,6 +22,12 @@ router.get('/jwt_test', jwtVerify, async (req, res) => {
   });
 });
 
+router.get('/verify', jwtVerify, async (req, res) => {
+  const { user } = req;
+
+  res.status(200).json(user);
+});
+
 router.get('/auth/:token', [
   param('token')
     .exists().withMessage('This parameter is required'),
@@ -38,11 +44,11 @@ router.get('/auth/:token', [
   }
 
   const tokenData = await getToken(token);
-  const tokenExpiresIn = 86400 * 7; // a week
+  //const tokenExpiresIn = 8640000 * 7;
 
   const jwtToken = jwt.sign({
     user_id: tokenData.user_id,
-  }, process.env.SECRET_KEY, { expiresIn: tokenExpiresIn });
+  }, process.env.SECRET_KEY, { expiresIn: '1h' });
 
   await deleteToken(token);
 

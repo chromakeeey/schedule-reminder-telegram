@@ -86,7 +86,8 @@ bot.onText(/\/token/, async (message) => {
   const chatId = message.chat.id;
   const unicalToken = await createToken(chatId);
 
-  bot.sendMessage(chatId, unicalToken);
+  const url = `http://${process.env.WEB_DOMEN}/auth/${unicalToken}`;
+  bot.sendMessage(chatId, `[Link](${url} "12123")`, { parse_mode: 'Markdown' });
 });
 
 bot.on('callback_query', async (message) => {
