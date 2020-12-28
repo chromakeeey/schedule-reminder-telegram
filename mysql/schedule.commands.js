@@ -144,7 +144,64 @@ const getUserSubscriptions = async (userId) => {
   return rows;
 };
 
+const checkIfUserHaveAccessToEditSchedule = async (userId, scheduleId) => {
+  const sql = `
+    SELECT id 
+    FROM schedule
+    WHERE creator_id = ? AND id = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    userId,
+    scheduleId,
+  ]);
+
+  return rows.length > 0;
+};
+
+const addLessonInfo = async (lessonInfo) => {
+  const sql = `
+    INSERT INTO lesson_info
+      (schedule_id, name)
+    VALUES
+      (?, ?)
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    lessonInfo.schedule_id,
+    lessonInfo.name,
+  ]);
+
+  return rows.affectedRows > 0;
+};
+
+const addLesson = async (lesson) => {
+  const sql = `
+    INSERT INTO schedule_lessons
+      (schedule_id, lesson_info_id, subgroup_id, day, serial, hour_start, minute_start, hour_end, minute_end)
+    VALUES
+      (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  console.log(lesson);
+  const [rows] = await connectionPool.query(sql, [
+    lesson.schedule_id,
+    lesson.lesson_info_id,
+    lesson.subgroup_id,
+    lesson.day,
+    lesson.serial,
+    lesson.time_start[0],
+    lesson.time_start[1],
+    lesson.time_end[0],
+    lesson.time_end[1],
+  ]);
+
+  return rows.affectedRows > 0;
+};
+
 module.exports = {
+  addLesson,
+  addLessonInfo,
   getSchedule,
   addSchedule,
   linkUserToSchedule,
@@ -154,4 +211,5 @@ module.exports = {
   checkIfScheduleExists,
   checkIfUserSubscribeToSchedule,
   subscribeToSchedule,
+  checkIfUserHaveAccessToEditSchedule,
 };
