@@ -10,6 +10,7 @@
 	"my_subs": "3. My subscriptions ✅",
 	"change_language": "4. Change language 🇬🇧",
 	"add_schedule": "5. Add schedule ➕",
+	"auth_browser": "6. Browser authorization 🌎",
 	"choose_your_schedule": "Choose one of your schedules:",
 	"no_your_schedules": "You haven't created any schedules yet.\n\n Choose 'Create schedule' from menu to create.",
 	"schedule_size_error": "Name size must be from 3 to 16 characters",
@@ -28,5 +29,7 @@
 	"enter_schedule_id": "Enter a unique identifier for the schedule:",
 	"success_subscribe": "✅ You have successfully subscribed to the schedule.\nNow you will receive a notification about the start of classes, schedule news and other information.",
 	"account_information %s %s %d %d": "Information about your account.\n\nCreated Name: %s\nCreated Date: %s\n\nNumber of subscriptions: %d\nNumber of own schedules: %d",
-	"/_error": "The name must not start with /"
+	"/_error": "The name must not start with /",
+	"auth_success": "🌎\nYou have successfully logged in to your browser.\nYour token has been activated and is no longer available.",
+	"click_auth": "For authorization go to the browser:"
 }

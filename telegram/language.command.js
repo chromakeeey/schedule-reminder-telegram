@@ -1,5 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 const i18n = require('i18n');
+
+const bot = require('./bot');
+
 const {
   setUserLocale,
 } = require('../mysql/user.command');
@@ -8,7 +11,7 @@ const {
   showMainMenu,
 } = require('./inlineButtons');
 
-const languageCmd = async (bot, message) => {
+const languageCmd = async (message) => {
   const chatId = message.chat.id;
 
   const messageOptions = {
@@ -24,14 +27,14 @@ const languageCmd = async (bot, message) => {
   bot.sendMessage(chatId, '↧', messageOptions);
 };
 
-const onLanguageCallback = async (bot, userId, actions) => {
+const onLanguageCallback = async (userId, actions) => {
   const locale = actions[1];
 
   await setUserLocale(userId, locale);
 
   i18n.setLocale(locale);
   bot.sendMessage(userId, i18n.__('new_language'));
-  showMainMenu(bot, userId);
+  showMainMenu(userId);
 };
 
 module.exports = {

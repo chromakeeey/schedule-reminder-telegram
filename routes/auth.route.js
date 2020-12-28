@@ -1,10 +1,14 @@
+/* eslint-disable no-underscore-dangle */
 require('dotenv').config();
 
 const { Router } = require('express');
 const { param } = require('express-validator');
 
+const i18n = require('i18n');
 const jwt = require('jsonwebtoken');
 const jwtVerify = require('../middlewares/jwtVerify');
+
+const bot = require('../telegram/bot');
 
 const {
   isValidToken,
@@ -13,14 +17,6 @@ const {
 } = require('../mysql/auth.commands');
 
 const router = Router();
-
-router.get('/jwt_test', jwtVerify, async (req, res) => {
-  console.log(req.user);
-
-  res.status(200).json({
-    message: 'All working!',
-  });
-});
 
 router.get('/verify', jwtVerify, async (req, res) => {
   const { user } = req;
@@ -47,9 +43,10 @@ router.get('/auth/:token', [
 
   const jwtToken = jwt.sign({
     user_id: tokenData.user_id,
-  }, process.env.SECRET_KEY, { expiresIn: '1h' });
+  }, process.env.SECRET_KEY, { expiresIn: '1d' });
 
   await deleteToken(token);
+  bot.sendMessage(tokenData.user_id, i18n.__('auth_success'));
 
   res.status(200).json({
     token: jwtToken,

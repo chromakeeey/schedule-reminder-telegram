@@ -2,13 +2,11 @@
 require('dotenv').config();
 require('express-async-errors');
 
-const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const cors = require('cors');
 const i18n = require('i18n');
 const path = require('path');
 
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
 const app = express();
 const { PORT } = process.env;
 
@@ -17,6 +15,8 @@ i18n.configure({
   directory: path.join(__dirname, '/locales'),
   defaultLocale: 'en',
 });
+
+const bot = require('./telegram/bot');
 
 const {
   onClickMenuButton,
@@ -81,22 +81,14 @@ app.listen(process.env.PORT, () => {
 bot.onText(/\/create_schedule (.+)/, (message, match) => createScheduleCmd(bot, message, match));
 bot.onText(/\/start/, (message) => startCmd(bot, message));
 bot.onText(/\/count_schedule/, (message) => countScheduleCmd(bot, message));
-bot.onText(/\/language/, (message) => languageCmd(bot, message));
-
-bot.onText(/\/token/, async (message) => {
-  const chatId = message.chat.id;
-  const unicalToken = await createToken(chatId);
-
-  const url = `http://${process.env.WEB_DOMEN}/auth/${unicalToken}`;
-  bot.sendMessage(chatId, `${url}`, { parse_mode: 'Markdown' });
-});
+bot.onText(/\/language/, (message) => languageCmd(message));
 
 bot.on('callback_query', async (message) => {
   const answer = message.data.split(':');
   const chatId = message.message.chat.id;
 
   if (answer[0] === 'language') {
-    onLanguageCallback(bot, chatId, answer);
+    onLanguageCallback(chatId, answer);
 
     return true;
   }
@@ -143,7 +135,7 @@ bot.on('message', async (message) => {
     await setChatState(chatId, 0);
 
     await bot.sendMessage(chatId, i18n.__('undo_end'));
-    showMainMenu(bot, chatId);
+    showMainMenu(chatId);
 
     return true;
   }
@@ -167,7 +159,7 @@ bot.on('message', async (message) => {
       bot.sendMessage(chatId, i18n.__('success_create_schedule %s %d', text, scheduleId));
 
       await setChatState(chatId, 0);
-      showMainMenu(bot, chatId);
+      showMainMenu(chatId);
     }
 
     return true;
@@ -200,43 +192,15 @@ bot.on('message', async (message) => {
     await setChatState(chatId, 0);
     await subscribeToSchedule(chatId, scheduleId);
     bot.sendMessage(chatId, i18n.__('success_subscribe'));
-    showMainMenu(bot, chatId);
+    showMainMenu(chatId);
 
     return true;
   }
 
   const numberOfAction = Number(text.split('.')[0]);
+  const namesOfActions = ['error', 'account', 'schedules', 'subs', 'language', 'add_schedule', 'auth_browser'];
 
-  switch (numberOfAction) {
-    case 1: {
-      onClickMenuButton(bot, chatId, 'account');
-      break;
-    }
-
-    case 2: {
-      onClickMenuButton(bot, chatId, 'schedules');
-      break;
-    }
-
-    case 3: {
-      onClickMenuButton(bot, chatId, 'subs');
-      break;
-    }
-
-    case 4: {
-      onClickMenuButton(bot, chatId, 'language');
-      break;
-    }
-
-    case 5: {
-      onClickMenuButton(bot, chatId, 'add_schedule');
-      break;
-    }
-
-    default: {
-      return false;
-    }
-  }
+  onClickMenuButton(chatId, namesOfActions[numberOfAction]);
 
   return true;
 });

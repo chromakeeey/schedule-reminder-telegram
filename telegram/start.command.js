@@ -10,7 +10,6 @@ const {
 } = require('./inlineButtons');
 
 const startCmd = async (bot, message) => {
-  console.log(message);
   const chatId = message.chat.id;
 
   const messageOptions = {
@@ -26,7 +25,7 @@ const startCmd = async (bot, message) => {
   const isIdExists = await isUserExists(chatId);
   if (isIdExists) {
     bot.sendMessage(chatId, i18n.__('StartFound %d', chatId), messageOptions);
-    showMainMenu(bot, chatId);
+    showMainMenu(chatId);
 
     return;
   }
@@ -37,7 +36,7 @@ const startCmd = async (bot, message) => {
   });
 
   bot.sendMessage(chatId, i18n.__('StartNew %d', chatId), messageOptions);
-  showMainMenu(bot, chatId);
+  showMainMenu(chatId);
 };
 
 module.exports = {

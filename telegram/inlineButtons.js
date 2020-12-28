@@ -1,6 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 const i18n = require('i18n');
 
+const bot = require('./bot');
+
 const {
   getUserLocale,
   setChatState,
@@ -14,7 +16,11 @@ const {
   getUserSubscriptions,
 } = require('../mysql/schedule.commands');
 
-const showMainMenu = async (bot, chatId) => {
+const {
+  createToken,
+} = require('../mysql/auth.commands');
+
+const showMainMenu = async (chatId) => {
   const locale = await getUserLocale(chatId);
   i18n.setLocale(locale);
 
@@ -26,6 +32,7 @@ const showMainMenu = async (bot, chatId) => {
         [i18n.__('my_subs')],
         [i18n.__('change_language')],
         [i18n.__('add_schedule')],
+        [i18n.__('auth_browser')],
       ],
     }),
   };
@@ -33,7 +40,7 @@ const showMainMenu = async (bot, chatId) => {
   bot.sendMessage(chatId, i18n.__('choose_action'), buttons);
 };
 
-const onClickAccountButton = async (bot, chatId) => {
+const onClickAccountButton = async (chatId) => {
   const locale = await getUserLocale(chatId);
   i18n.setLocale(locale);
 
@@ -49,7 +56,7 @@ const onClickAccountButton = async (bot, chatId) => {
       countSubscriptions));
 };
 
-const onClickSchedulesButton = async (bot, chatId) => {
+const onClickSchedulesButton = async (chatId) => {
   const schedules = await getUserSchedules(chatId);
   const locale = await getUserLocale(chatId);
   i18n.setLocale(locale);
@@ -78,7 +85,7 @@ const onClickSchedulesButton = async (bot, chatId) => {
   });
 };
 
-const onClickSubsButton = async (bot, chatId) => {
+const onClickSubsButton = async (chatId) => {
   const subscriptions = await getUserSubscriptions(chatId);
   const locale = await getUserLocale(chatId);
   i18n.setLocale(locale);
@@ -107,7 +114,7 @@ const onClickSubsButton = async (bot, chatId) => {
   });
 };
 
-const onClickLanguageButton = (bot, chatId) => {
+const onClickLanguageButton = (chatId) => {
   const messageOptions = {
     reply_markup: JSON.stringify({
       inline_keyboard: [
@@ -121,7 +128,7 @@ const onClickLanguageButton = (bot, chatId) => {
   bot.sendMessage(chatId, '↧', messageOptions);
 };
 
-const onClickAddSchedule = async (bot, chatId) => {
+const onClickAddSchedule = async (chatId) => {
   await setChatState(chatId, 1);
   const locale = await getUserLocale(chatId);
   i18n.setLocale(locale);
@@ -135,6 +142,26 @@ const onClickAddSchedule = async (bot, chatId) => {
   bot.sendMessage(chatId, i18n.__('enter_schedule_name'), buttons);
 };
 
+const onClickAuthBrowser = async (chatId) => {
+  const locale = await getUserLocale(chatId);
+  i18n.setLocale(locale);
+
+  const unicalToken = await createToken(chatId);
+  const url = `http://${process.env.WEB_DOMEN}/auth/${unicalToken}`;
+
+  // const options = {
+  //   reply_markup: {
+  //     inline_keyboard: [
+  //       [{ text:'Go to browser', url }],
+  //     ],
+  //   },
+  // };
+  //
+  // bot.sendMessage(chatId, i18n.__('click_auth'), options);
+
+  bot.sendMessage(chatId, url);
+};
+
 /*
     account - My Account
     schedules - My Schedules
@@ -142,30 +169,35 @@ const onClickAddSchedule = async (bot, chatId) => {
     language - Change Language
     add_schedule - Add Schedule
 */
-const onClickMenuButton = (bot, chatId, button) => {
+const onClickMenuButton = (chatId, button) => {
   switch (button) {
     case 'account': {
-      onClickAccountButton(bot, chatId);
+      onClickAccountButton(chatId);
       break;
     }
 
     case 'schedules': {
-      onClickSchedulesButton(bot, chatId);
+      onClickSchedulesButton(chatId);
       break;
     }
 
     case 'subs': {
-      onClickSubsButton(bot, chatId);
+      onClickSubsButton(chatId);
       break;
     }
 
     case 'language': {
-      onClickLanguageButton(bot, chatId);
+      onClickLanguageButton(chatId);
       break;
     }
 
     case 'add_schedule': {
-      onClickAddSchedule(bot, chatId);
+      onClickAddSchedule(chatId);
+      break;
+    }
+
+    case 'auth_browser': {
+      onClickAuthBrowser(chatId);
       break;
     }
 

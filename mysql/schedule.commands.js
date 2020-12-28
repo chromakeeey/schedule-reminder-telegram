@@ -183,7 +183,6 @@ const addLesson = async (lesson) => {
       (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  console.log(lesson);
   const [rows] = await connectionPool.query(sql, [
     lesson.schedule_id,
     lesson.lesson_info_id,
