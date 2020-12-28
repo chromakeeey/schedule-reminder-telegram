@@ -126,6 +126,24 @@ const getCountSubscriptions = async (userId) => {
   return rows[0].subscription_count;
 };
 
+const checkIfUserAdmin = async (userId) => {
+  const sql = `
+    SELECT admin_level
+    FROM user
+    WHERE chatid = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    userId,
+  ]);
+
+  if (rows.length === 0) {
+    return false;
+  }
+
+  return rows[0].admin_level > 0;
+};
+
 module.exports = {
   isUserExists,
   addUser,
@@ -136,4 +154,5 @@ module.exports = {
   getChatState,
   getCountSchedules,
   getCountSubscriptions,
+  checkIfUserAdmin,
 };

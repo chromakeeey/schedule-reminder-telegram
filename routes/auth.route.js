@@ -44,7 +44,6 @@ router.get('/auth/:token', [
   }
 
   const tokenData = await getToken(token);
-  //const tokenExpiresIn = 8640000 * 7;
 
   const jwtToken = jwt.sign({
     user_id: tokenData.user_id,

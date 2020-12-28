@@ -112,7 +112,7 @@ const deleteLinkUserToSchedule = async (scheduleId, userId) => {
 
 const getUserSchedules = async (userId) => {
   const sql = `
-        SELECT id, name
+        SELECT id, name, created_at
         FROM schedule
         WHERE creator_id = ?
     `;

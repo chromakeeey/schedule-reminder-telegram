@@ -54,6 +54,7 @@ app.use(express.json({ extended: true }));
 app.use(cors());
 
 app.use('/', require('./routes/auth.route'));
+app.use('/', require('./routes/schedule.route'));
 
 app.get('/', (req, res) => {
   res.end('telegram.bot.schedule.reminder.2020');
