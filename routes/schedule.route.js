@@ -46,12 +46,15 @@ router.get('/schedules/:id', [
 
   if (schedule !== undefined) {
     const user = await getUser(schedule.creator_id);
+    const ifAdmin = await checkIfUserAdmin(req.user.user_id);
 
-    delete user.language;
-    delete user.chat_state;
-    delete user.admin_level;
-    delete user.created_at;
     delete schedule.creator_id;
+    if (!ifAdmin) {
+      delete user.language;
+      delete user.chat_state;
+      delete user.admin_level;
+      delete user.created_at;
+    }
 
     schedule.user = user;
     res.status(200).json(schedule);
