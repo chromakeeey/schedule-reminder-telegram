@@ -41,10 +41,6 @@ const {
 
 } = require('./telegram/schedule');
 
-const {
-  createToken,
-} = require('./mysql/auth.commands');
-
 const { createScheduleCmd } = require('./telegram/create_schedule.command');
 const { startCmd } = require('./telegram/start.command');
 const { countScheduleCmd } = require('./telegram/count_schedule.commmand');
