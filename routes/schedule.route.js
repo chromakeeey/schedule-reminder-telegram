@@ -7,6 +7,7 @@ const {
   checkIfUserHaveAccessToEditSchedule,
   addLesson,
   addLessonInfo,
+  getScheduleDay,
 } = require('../mysql/schedule.commands');
 
 const {
@@ -14,6 +15,7 @@ const {
   checkIfUserAdmin,
 } = require('../mysql/user.command');
 
+const daysOfWeek = require('../helpers/DaysOfWeek');
 const jwtVerify = require('../middlewares/jwtVerify');
 
 const router = Router();
@@ -60,6 +62,15 @@ router.get('/schedules/:id', [
     }
 
     schedule.user = user;
+
+    schedule.monday = await getScheduleDay(id, daysOfWeek.MONDAY);
+    schedule.tuesday = await getScheduleDay(id, daysOfWeek.TUESDAY);
+    schedule.wednesday = await getScheduleDay(id, daysOfWeek.WEDNESDAY);
+    schedule.thursday = await getScheduleDay(id, daysOfWeek.THURSDAY);
+    schedule.friday = await getScheduleDay(id, daysOfWeek.FRIDAY);
+    schedule.saturday = await getScheduleDay(id, daysOfWeek.SATURDAY);
+    schedule.sunday = await getScheduleDay(id, daysOfWeek.SUNDAY);
+
     res.status(200).json(schedule);
   }
 
