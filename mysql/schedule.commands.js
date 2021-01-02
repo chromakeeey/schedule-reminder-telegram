@@ -198,6 +198,20 @@ const addLesson = async (lesson) => {
   return rows.affectedRows > 0;
 };
 
+const getScheduleLessons = async (scheduleId) => {
+  const sql = `
+    SELECT id, name
+    FROM lesson_info
+    WHERE schedule_id = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    scheduleId,
+  ]);
+
+  return rows;
+};
+
 const getScheduleDay = async (scheduleId, dayOfWeek) => {
   const sql = `
     SELECT 
@@ -257,4 +271,5 @@ module.exports = {
   subscribeToSchedule,
   checkIfUserHaveAccessToEditSchedule,
   getScheduleDay,
+  getScheduleLessons,
 };

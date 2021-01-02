@@ -8,6 +8,7 @@ const {
   addLesson,
   addLessonInfo,
   getScheduleDay,
+  getScheduleLessons,
 } = require('../mysql/schedule.commands');
 
 const {
@@ -62,6 +63,7 @@ router.get('/schedules/:id', [
     }
 
     schedule.user = user;
+    schedule.lessons = await getScheduleLessons(id);
 
     schedule.monday = await getScheduleDay(id, daysOfWeek.MONDAY);
     schedule.tuesday = await getScheduleDay(id, daysOfWeek.TUESDAY);
