@@ -43,7 +43,7 @@ router.get('/auth/:token', [
 
   const jwtToken = jwt.sign({
     user_id: tokenData.user_id,
-  }, process.env.SECRET_KEY, { expiresIn: '1d' });
+  }, process.env.SECRET_KEY, { expiresIn: '1w' });
 
   await deleteToken(token);
   bot.sendMessage(tokenData.user_id, i18n.__('auth_success'));
