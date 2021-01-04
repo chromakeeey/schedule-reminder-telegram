@@ -9,6 +9,7 @@ const {
   addLessonInfo,
   getScheduleDay,
   getScheduleLessons,
+  checkIfUserSubscribeToSchedule,
 } = require('../mysql/schedule.commands');
 
 const {
@@ -53,6 +54,7 @@ router.get('/schedules/:id', [
   if (schedule !== undefined) {
     const user = await getUser(schedule.creator_id);
     const ifAdmin = await checkIfUserAdmin(req.user.user_id);
+    const ifCreator = req.user.user_id === schedule.creator_id;
 
     delete schedule.creator_id;
     if (!ifAdmin) {
@@ -63,6 +65,9 @@ router.get('/schedules/:id', [
     }
 
     schedule.user = user;
+    schedule.is_subscribe = await checkIfUserSubscribeToSchedule(req.user.user_id, id);
+    schedule.is_edit = ifAdmin || ifCreator;
+
     schedule.lessons = await getScheduleLessons(id);
 
     schedule.monday = await getScheduleDay(id, daysOfWeek.MONDAY);

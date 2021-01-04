@@ -89,8 +89,8 @@ const linkUserToSchedule = async (scheduleId, userId) => {
   `;
 
   const [rows] = await connectionPool.query(sql, [
-    scheduleId,
     userId,
+    scheduleId,
   ]);
 
   return rows.insertId;
