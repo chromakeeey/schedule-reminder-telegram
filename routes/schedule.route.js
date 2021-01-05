@@ -2,7 +2,6 @@ const { Router } = require('express');
 const { param, body } = require('express-validator');
 
 const {
-  getUserSchedules,
   getSchedule,
   checkIfUserHaveAccessToEditSchedule,
   addLesson,
@@ -21,26 +20,6 @@ const daysOfWeek = require('../helpers/DaysOfWeek');
 const jwtVerify = require('../middlewares/jwtVerify');
 
 const router = Router();
-
-router.get('/users/:id/schedules', [
-  param('id').toInt(),
-], [
-  jwtVerify,
-], async (req, res) => {
-  const { id } = req.params;
-  const ifUserAdmin = await checkIfUserAdmin(req.user.user_id);
-
-  if (id !== req.user.user_id && !ifUserAdmin) {
-    res.status(403).json({ message: 'No access.' });
-
-    return false;
-  }
-
-  const schedules = await getUserSchedules(id);
-  res.status(200).json(schedules);
-
-  return true;
-});
 
 router.get('/schedules/:id', [
   param('id').toInt(),

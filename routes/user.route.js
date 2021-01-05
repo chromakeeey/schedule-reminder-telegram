@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { param } = require('express-validator');
+const { param, body } = require('express-validator');
 
 const jwtVerify = require('../middlewares/jwtVerify');
 
@@ -12,7 +12,28 @@ const {
 const {
   linkUserToSchedule,
   deleteLinkUserToSchedule,
+  getUserSchedules,
 } = require('../mysql/schedule.commands');
+
+router.get('/users/:id/schedules', [
+  param('id').toInt(),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { id } = req.params;
+  const ifUserAdmin = await checkIfUserAdmin(req.user.user_id);
+
+  if (id !== req.user.user_id && !ifUserAdmin) {
+    res.status(403).json({ message: 'No access.' });
+
+    return false;
+  }
+
+  const schedules = await getUserSchedules(id);
+  res.status(200).json(schedules);
+
+  return true;
+});
 
 router.delete('/users/:id/subscriptions/:scheduleId', [
   param('id').toInt(),
@@ -37,14 +58,16 @@ router.delete('/users/:id/subscriptions/:scheduleId', [
   return true;
 });
 
-router.put('/users/:id/subscriptions/:scheduleId', [
+router.post('/users/:id/subscriptions', [
   param('id').toInt(),
-  param('scheduleId').toInt(),
+
+  body('schedule_id').isInt().withMessage('Value should be integer!'),
 ], [
   jwtVerify,
 ], async (req, res) => {
-  const { id, scheduleId } = req.params;
   const { user } = req;
+  const { id } = req.params;
+  const { schedule_id: scheduleId } = req.body;
 
   const ifAdmin = await checkIfUserAdmin(user.user_id);
 

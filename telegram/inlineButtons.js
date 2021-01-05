@@ -149,16 +149,15 @@ const onClickAuthBrowser = async (chatId) => {
   const unicalToken = await createToken(chatId);
   const url = `http://${process.env.WEB_DOMEN}/auth/${unicalToken}`;
 
-  // const options = {
-  //   reply_markup: {
-  //     inline_keyboard: [
-  //       [{ text:'Go to browser', url }],
-  //     ],
-  //   },
-  // };
-  //
-  // bot.sendMessage(chatId, i18n.__('click_auth'), options);
+  const options = {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Go to browser', url: 'https://www.google.com/' }],
+      ],
+    },
+  };
 
+  bot.sendMessage(chatId, i18n.__('click_auth'), options);
   bot.sendMessage(chatId, url);
 };
 

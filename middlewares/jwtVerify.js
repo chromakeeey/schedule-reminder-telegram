@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const jwtVerify = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
-  console.log(req);
 
   if (token == null) {
     return res.status(401).json({ message: 'Token is not available or does not exist' });

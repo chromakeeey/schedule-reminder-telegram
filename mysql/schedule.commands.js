@@ -232,7 +232,7 @@ const getScheduleDay = async (scheduleId, dayOfWeek) => {
       (lesson_info.id = schedule_lessons.lesson_info_id)
   `;
 
-  function compareSerial(a, b) {
+  const compareSerial = (a, b) => {
     const serialA = a.serial;
     const serialB = b.serial;
 
@@ -244,15 +244,44 @@ const getScheduleDay = async (scheduleId, dayOfWeek) => {
     }
 
     return comparsion;
-  }
+  };
+
+  const getMaxSerial = (list) => {
+    let nowMaxSerial = list[0].serial;
+
+    list.forEach((item) => {
+      if (item.serial > nowMaxSerial) {
+        nowMaxSerial = item.serial;
+      }
+    });
+
+    return nowMaxSerial;
+  };
 
   const [rows] = await connectionPool.query(sql, [
     scheduleId,
     dayOfWeek,
   ]);
 
-  const lessons = rows;
-  lessons.sort(compareSerial);
+  if (rows.length === 0) {
+    return rows;
+  }
+
+  rows.sort(compareSerial);
+
+  const maxSerial = getMaxSerial(rows);
+  console.log('Max serial -', maxSerial);
+
+  const lessons = [];
+  for (let i = 1; i < maxSerial; i += 1) {
+    const sortedLessons = rows.filter((row) => row.serial === i);
+
+    if (sortedLessons.length === 0) {
+      lessons.push(false);
+    } else {
+      lessons.push(sortedLessons);
+    }
+  }
 
   return lessons;
 };
