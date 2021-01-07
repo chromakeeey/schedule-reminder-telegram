@@ -6,7 +6,7 @@ const jwtVerify = require('../middlewares/jwtVerify');
 const router = Router();
 
 const {
-  checkIfUserAdmin,
+  checkIfUserAdmin, getUser,
 } = require('../mysql/user.command');
 
 const {
@@ -56,6 +56,27 @@ router.delete('/users/:id/subscriptions/:scheduleId', [
   res.status(200).end();
 
   return true;
+});
+
+router.get('/users/:id', [
+  param('id').toInt(),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { user: userAuth } = req;
+  const { id } = req.params;
+
+  const ifAdmin = await checkIfUserAdmin(userAuth.user_id);
+  const user = await getUser(id);
+
+  if (!ifAdmin && userAuth.user_id !== id) {
+    delete user.language;
+    delete user.chat_state;
+    delete user.admin_level;
+    delete user.created_at;
+  }
+
+  res.status(200).json(user);
 });
 
 router.post('/users/:id/subscriptions', [

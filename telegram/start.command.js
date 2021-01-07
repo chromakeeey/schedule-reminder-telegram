@@ -33,6 +33,7 @@ const startCmd = async (bot, message) => {
   await addUser({
     chatid: chatId,
     name: message.chat.first_name,
+    username: message.chat.username,
   });
 
   bot.sendMessage(chatId, i18n.__('StartNew %d', chatId), messageOptions);

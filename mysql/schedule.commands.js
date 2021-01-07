@@ -270,7 +270,6 @@ const getScheduleDay = async (scheduleId, dayOfWeek) => {
   rows.sort(compareSerial);
 
   const maxSerial = getMaxSerial(rows);
-  console.log('Max serial -', maxSerial);
 
   const lessons = [];
   for (let i = 1; i < maxSerial; i += 1) {

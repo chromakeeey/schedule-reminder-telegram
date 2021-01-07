@@ -23,14 +23,15 @@ const getUser = async (userId) => {
 const addUser = async (user) => {
   const sql = `
         INSERT INTO user
-        (chatid, name)
+        (chatid, name, username)
         VALUES
-        (?, ?)
+        (?, ?, ?)
     `;
 
   const [rows] = await connectionPool.query(sql, [
     user.chatid,
     user.name,
+    user.username,
   ]);
 
   return rows.affectedRows > 0;
