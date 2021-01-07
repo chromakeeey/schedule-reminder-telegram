@@ -6,13 +6,15 @@ const jwtVerify = require('../middlewares/jwtVerify');
 const router = Router();
 
 const {
-  checkIfUserAdmin, getUser,
+  checkIfUserAdmin,
+  getUser,
 } = require('../mysql/user.command');
 
 const {
   linkUserToSchedule,
   deleteLinkUserToSchedule,
   getUserSchedules,
+  getUserSubscriptions,
 } = require('../mysql/schedule.commands');
 
 router.get('/users/:id/schedules', [
@@ -77,6 +79,17 @@ router.get('/users/:id', [
   }
 
   res.status(200).json(user);
+});
+
+router.get('/users/:id/subscriptions', [
+  param('id').toInt(),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { id } = req.params;
+  const subscriptions = await getUserSubscriptions(id);
+
+  res.status(200).json(subscriptions);
 });
 
 router.post('/users/:id/subscriptions', [

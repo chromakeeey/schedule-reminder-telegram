@@ -122,6 +122,25 @@ const getUserSchedules = async (userId) => {
   return rows;
 };
 
+const findSchedules = async (keyWord) => {
+  const ifInt = !(Number.isNaN(parseInt(keyWord, 10)));
+  const orSql = ifInt ? `OR id = ${parseInt(keyWord, 10)}` : ' ';
+
+  const sql = `
+    SELECT
+      id,
+      name
+    FROM
+      schedule
+    WHERE
+      name LIKE '${keyWord}%' 
+      ${orSql}
+  `;
+
+  const [rows] = await connectionPool.query(sql);
+  return rows;
+};
+
 const getUserSubscriptions = async (userId) => {
   const sql = `
     SELECT
@@ -300,4 +319,5 @@ module.exports = {
   checkIfUserHaveAccessToEditSchedule,
   getScheduleDay,
   getScheduleLessons,
+  findSchedules,
 };
