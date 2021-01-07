@@ -9,6 +9,7 @@ const {
   getScheduleDay,
   getScheduleLessons,
   checkIfUserSubscribeToSchedule,
+  findSchedules,
 } = require('../mysql/schedule.commands');
 
 const {
@@ -157,6 +158,17 @@ router.post('/schedules/:id/lessons', [
   res.status(200).end();
 
   return true;
+});
+
+router.get('/schedules/search/:keyWord', [
+  param('keyWord').isString(),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { keyWord } = req.params;
+  const result = await findSchedules(keyWord);
+
+  res.status(200).json(result);
 });
 
 module.exports = router;
