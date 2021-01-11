@@ -12,6 +12,12 @@ const {
 const startCmd = async (bot, message) => {
   const chatId = message.chat.id;
 
+  if (chatId < 0) {
+    bot.sendMessage(chatId, i18n.__('chat_error'));
+
+    return;
+  }
+
   const messageOptions = {
     reply_markup: JSON.stringify({
       inline_keyboard: [

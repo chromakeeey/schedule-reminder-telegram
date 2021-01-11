@@ -123,8 +123,8 @@ const getUserSchedules = async (userId) => {
 };
 
 const findSchedules = async (keyWord) => {
-  const ifInt = !(Number.isNaN(parseInt(keyWord, 10)));
-  const orSql = ifInt ? `OR id = ${parseInt(keyWord, 10)}` : ' ';
+  const ifInt = !(Number.isNaN(Number(keyWord)));
+  const orSql = ifInt ? `OR id = ${Number(keyWord)}` : ' ';
 
   const sql = `
     SELECT
@@ -231,6 +231,28 @@ const getScheduleLessons = async (scheduleId) => {
   return rows;
 };
 
+const getScheduleSubscribers = async (scheduleId) => {
+  const sql = `
+    SELECT
+      user.chatid,
+      user.name,
+      user.username
+    FROM
+      schedule_subscription,
+      user
+    WHERE
+      schedule_subscription.schedule_id = ?
+    AND
+      schedule_subscription.user_id = user.chatid 
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    scheduleId,
+  ]);
+
+  return rows;
+};
+
 const getScheduleDay = async (scheduleId, dayOfWeek) => {
   const sql = `
     SELECT 
@@ -320,4 +342,5 @@ module.exports = {
   getScheduleDay,
   getScheduleLessons,
   findSchedules,
+  getScheduleSubscribers,
 };

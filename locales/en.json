@@ -31,5 +31,6 @@
 	"account_information %s %s %d %d": "Information about your account.\n\nCreated Name: %s\nCreated Date: %s\n\nNumber of subscriptions: %d\nNumber of own schedules: %d",
 	"/_error": "The name must not start with /",
 	"auth_success": "🌎\nYou have successfully logged in to your browser.\nYour token has been activated and is no longer available.",
-	"click_auth": "For authorization go to the browser.\nAuthorization will be available for only 5 minutes."
+	"click_auth": "For authorization go to the browser.\nAuthorization will be available for only 5 minutes.",
+	"chat_error": "❌\nSorry, the bot is not available in chats, but we are working on it!"
 }

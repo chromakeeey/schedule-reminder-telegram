@@ -10,6 +10,7 @@ const {
   getScheduleLessons,
   checkIfUserSubscribeToSchedule,
   findSchedules,
+  getScheduleSubscribers,
 } = require('../mysql/schedule.commands');
 
 const {
@@ -62,6 +63,17 @@ router.get('/schedules/:id', [
   }
 
   return res.status(404).end();
+});
+
+router.get('/schedules/:id/subscribers', [
+  param('id').toInt(),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { id } = req.params;
+  const subscribers = await getScheduleSubscribers(id);
+
+  res.status(200).json(subscribers);
 });
 
 router.post('/schedules/:id/lessons-info', [
