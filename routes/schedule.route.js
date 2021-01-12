@@ -7,6 +7,7 @@ const {
   addLesson,
   addLessonInfo,
   getScheduleDay,
+  getScheduleDayToEdit,
   getScheduleLessons,
   checkIfUserSubscribeToSchedule,
   findSchedules,
@@ -22,6 +23,33 @@ const daysOfWeek = require('../helpers/DaysOfWeek');
 const jwtVerify = require('../middlewares/jwtVerify');
 
 const router = Router();
+
+router.get('/schedules/:id/to-edit', [
+  param('id').toInt(),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { id } = req.params;
+  const schedule = await getSchedule(id);
+
+  if (schedule !== undefined) {
+    delete schedule.creator_id;
+
+    schedule.lessons = await getScheduleLessons(id);
+
+    schedule.monday = await getScheduleDayToEdit(id, daysOfWeek.MONDAY);
+    schedule.tuesday = await getScheduleDayToEdit(id, daysOfWeek.TUESDAY);
+    schedule.wednesday = await getScheduleDayToEdit(id, daysOfWeek.WEDNESDAY);
+    schedule.thursday = await getScheduleDayToEdit(id, daysOfWeek.THURSDAY);
+    schedule.friday = await getScheduleDayToEdit(id, daysOfWeek.FRIDAY);
+    schedule.saturday = await getScheduleDayToEdit(id, daysOfWeek.SATURDAY);
+    schedule.sunday = await getScheduleDayToEdit(id, daysOfWeek.SUNDAY);
+
+    res.status(200).json(schedule);
+  }
+
+  return res.status(404).end();
+});
 
 router.get('/schedules/:id', [
   param('id').toInt(),

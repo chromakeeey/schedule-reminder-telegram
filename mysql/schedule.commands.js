@@ -253,6 +253,54 @@ const getScheduleSubscribers = async (scheduleId) => {
   return rows;
 };
 
+const getScheduleDayToEdit = async (scheduleId, dayOfWeek) => {
+  const sql = `
+    SELECT 
+      schedule_lessons.id, 
+      schedule_lessons.subgroup_id, 
+      schedule_lessons.serial, 
+      schedule_lessons.hour_start, 
+      schedule_lessons.minute_start, 
+      schedule_lessons.hour_end, 
+      schedule_lessons.minute_end, 
+      lesson_info.name
+    FROM
+      schedule_lessons,
+      lesson_info
+    WHERE
+      (schedule_lessons.schedule_id = ? AND schedule_lessons.day = ?)
+    AND
+      (lesson_info.id = schedule_lessons.lesson_info_id)
+  `;
+
+  const compareSerial = (a, b) => {
+    const serialA = a.serial;
+    const serialB = b.serial;
+
+    let comparsion = 0;
+    if (serialA > serialB) {
+      comparsion = 1;
+    } else if (serialA < serialB) {
+      comparsion = -1;
+    }
+
+    return comparsion;
+  };
+
+  const [rows] = await connectionPool.query(sql, [
+    scheduleId,
+    dayOfWeek,
+  ]);
+
+  if (rows.length === 0) {
+    return rows;
+  }
+
+  rows.sort(compareSerial);
+
+  return rows;
+};
+
 const getScheduleDay = async (scheduleId, dayOfWeek) => {
   const sql = `
     SELECT 
@@ -340,6 +388,7 @@ module.exports = {
   subscribeToSchedule,
   checkIfUserHaveAccessToEditSchedule,
   getScheduleDay,
+  getScheduleDayToEdit,
   getScheduleLessons,
   findSchedules,
   getScheduleSubscribers,
