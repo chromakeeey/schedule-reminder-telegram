@@ -1,5 +1,27 @@
 const { connectionPool } = require('./connection');
 
+const deleteLessonTemplate = async (lessonTemplateId) => {
+  const sql = `
+    DELETE FROM lesson_info
+    WHERE id = ?
+  `;
+
+  const sqlSchedule = `
+    DELETE FROM schedule_lessons
+    WHERE lesson_info_id = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    lessonTemplateId,
+  ]);
+
+  const [rowsSchedule] = await connectionPool.query(sqlSchedule, [
+    lessonTemplateId,
+  ]);
+
+  return (rows.affectedRows > 0 && rowsSchedule.affectedRows > 0);
+};
+
 const checkIfScheduleExists = async (scheduleId) => {
   const sql = `
     SELECT EXISTS
@@ -392,4 +414,5 @@ module.exports = {
   getScheduleLessons,
   findSchedules,
   getScheduleSubscribers,
+  deleteLessonTemplate,
 };

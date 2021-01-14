@@ -12,6 +12,7 @@ const {
   checkIfUserSubscribeToSchedule,
   findSchedules,
   getScheduleSubscribers,
+  deleteLessonTemplate,
 } = require('../mysql/schedule.commands');
 
 const {
@@ -102,6 +103,30 @@ router.get('/schedules/:id/subscribers', [
   const subscribers = await getScheduleSubscribers(id);
 
   res.status(200).json(subscribers);
+});
+
+router.delete('/schedules/:id/lessons-info/:templateId', [
+  param('id').toInt(),
+  param('templateId').toInt(),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { id, templateId } = req.params;
+  const { user } = req;
+
+  const ifHaveAccess = await checkIfUserHaveAccessToEditSchedule(user.user_id, id);
+  const ifAdmin = await checkIfUserAdmin(user.user_id);
+
+  if (!ifHaveAccess && !ifAdmin) {
+    res.status(403).json({ message: 'No access.' });
+
+    return false;
+  }
+
+  await deleteLessonTemplate(templateId);
+  res.status(200).end();
+
+  return true;
 });
 
 router.post('/schedules/:id/lessons-info', [
