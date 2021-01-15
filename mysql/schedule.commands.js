@@ -1,5 +1,20 @@
 const { connectionPool } = require('./connection');
 
+const changeLessonTemplateName = async (lessonTemplateId, name) => {
+  const sql = `
+    UPDATE lesson_info
+    SET name = ?
+    WHERE id = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    name,
+    lessonTemplateId,
+  ]);
+
+  return rows.affectedRows > 0;
+};
+
 const deleteLessonTemplate = async (lessonTemplateId) => {
   const sql = `
     DELETE FROM lesson_info
@@ -216,6 +231,38 @@ const addLessonInfo = async (lessonInfo) => {
   return rows.affectedRows > 0;
 };
 
+const editLesson = async (lessonId, lesson) => {
+  const sql = `
+    UPDATE 
+      schedule_lessons
+    SET
+      lesson_info_id = ?,
+      subgroup_id = ?,
+      day = ?,
+      serial = ?,
+      hour_start = ?,
+      minute_start = ?,
+      hour_end = ?,
+      minute_end = ?
+    WHERE
+      id = ?
+  `;
+
+  const [rows] = await connectionPool.query(sql, [
+    lesson.lesson_info_id,
+    lesson.subgroup_id,
+    lesson.day,
+    lesson.serial,
+    lesson.time_start[0],
+    lesson.time_start[1],
+    lesson.time_end[0],
+    lesson.time_end[1],
+    lessonId,
+  ]);
+
+  return rows.affectedRows > 0;
+};
+
 const addLesson = async (lesson) => {
   const sql = `
     INSERT INTO schedule_lessons
@@ -383,7 +430,7 @@ const getScheduleDay = async (scheduleId, dayOfWeek) => {
   const maxSerial = getMaxSerial(rows);
 
   const lessons = [];
-  for (let i = 1; i < maxSerial; i += 1) {
+  for (let i = 1; i <= maxSerial; i += 1) {
     const sortedLessons = rows.filter((row) => row.serial === i);
 
     if (sortedLessons.length === 0) {
@@ -397,6 +444,7 @@ const getScheduleDay = async (scheduleId, dayOfWeek) => {
 };
 
 module.exports = {
+  editLesson,
   addLesson,
   addLessonInfo,
   getSchedule,
@@ -415,4 +463,5 @@ module.exports = {
   findSchedules,
   getScheduleSubscribers,
   deleteLessonTemplate,
+  changeLessonTemplateName,
 };

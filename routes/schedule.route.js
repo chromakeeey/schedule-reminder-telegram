@@ -13,6 +13,8 @@ const {
   findSchedules,
   getScheduleSubscribers,
   deleteLessonTemplate,
+  changeLessonTemplateName,
+  editLesson,
 } = require('../mysql/schedule.commands');
 
 const {
@@ -105,6 +107,36 @@ router.get('/schedules/:id/subscribers', [
   res.status(200).json(subscribers);
 });
 
+router.put('/schedules/:id/lessons-info/:templateId/name', [
+  param('id').toInt(),
+  param('templateId').toInt(),
+
+  body('name').isLength({
+    min: 2,
+    max: 32,
+  }),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { id, templateId } = req.params;
+  const { user } = req;
+  const { name } = req.body;
+
+  const ifHaveAccess = await checkIfUserHaveAccessToEditSchedule(user.user_id, id);
+  const ifAdmin = await checkIfUserAdmin(user.user_id);
+
+  if (!ifHaveAccess && !ifAdmin) {
+    res.status(403).json({ message: 'No access.' });
+
+    return false;
+  }
+
+  await changeLessonTemplateName(templateId, name);
+  res.status(200).end();
+
+  return true;
+});
+
 router.delete('/schedules/:id/lessons-info/:templateId', [
   param('id').toInt(),
   param('templateId').toInt(),
@@ -158,6 +190,67 @@ router.post('/schedules/:id/lessons-info', [
   lessonInfo.schedule_id = id;
 
   await addLessonInfo(lessonInfo);
+  res.status(200).end();
+
+  return true;
+});
+
+router.put('/schedules/:id/lessons/:lessonId', [
+  param('id').toInt(),
+  param('lessonId').toInt(),
+
+  body('lesson_info_id')
+    .exists().withMessage('This parameter is required.')
+    .isInt()
+    .toInt()
+    .withMessage('The value should be of type integer.'),
+
+  body('subgroup_id')
+    .exists().withMessage('This parameter is required.')
+    .isInt()
+    .toInt()
+    .withMessage('The value should be of type integer.'),
+
+  body('day')
+    .exists().withMessage('This parameter is required.')
+    .isInt()
+    .toInt()
+    .withMessage('The value should be of type integer.'),
+
+  body('serial')
+    .exists().withMessage('This parameter is required.')
+    .isInt()
+    .toInt()
+    .withMessage('The value should be of type integer.'),
+
+  body('time_start')
+    .exists().withMessage('This parameter is required.')
+    .isArray()
+    .toArray()
+    .withMessage('The value should be of type array.'),
+
+  body('time_end')
+    .exists().withMessage('This parameter is required.')
+    .isArray()
+    .toArray()
+    .withMessage('The value should be of type array.'),
+], [
+  jwtVerify,
+], async (req, res) => {
+  const { id, lessonId } = req.params;
+  const { user } = req;
+  const lesson = req.body;
+
+  const ifHaveAccess = await checkIfUserHaveAccessToEditSchedule(user.user_id, id);
+  const ifAdmin = await checkIfUserAdmin(user.user_id);
+
+  if (!ifHaveAccess && !ifAdmin) {
+    res.status(403).json({ message: 'No access.' });
+
+    return false;
+  }
+
+  await editLesson(lessonId, lesson);
   res.status(200).end();
 
   return true;
