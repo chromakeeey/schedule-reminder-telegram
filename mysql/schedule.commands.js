@@ -238,7 +238,6 @@ const editLesson = async (lessonId, lesson) => {
     SET
       lesson_info_id = ?,
       subgroup_id = ?,
-      day = ?,
       serial = ?,
       hour_start = ?,
       minute_start = ?,
@@ -251,7 +250,6 @@ const editLesson = async (lessonId, lesson) => {
   const [rows] = await connectionPool.query(sql, [
     lesson.lesson_info_id,
     lesson.subgroup_id,
-    lesson.day,
     lesson.serial,
     lesson.time_start[0],
     lesson.time_start[1],

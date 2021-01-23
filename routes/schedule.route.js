@@ -211,12 +211,6 @@ router.put('/schedules/:id/lessons/:lessonId', [
     .toInt()
     .withMessage('The value should be of type integer.'),
 
-  body('day')
-    .exists().withMessage('This parameter is required.')
-    .isInt()
-    .toInt()
-    .withMessage('The value should be of type integer.'),
-
   body('serial')
     .exists().withMessage('This parameter is required.')
     .isInt()
