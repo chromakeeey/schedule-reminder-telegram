@@ -38,8 +38,11 @@ const {
 
 const {
   showScheduleByOwner,
-
 } = require('./telegram/schedule');
+
+const {
+  checkLessonTime,
+} = require('./telegram/reminder');
 
 const { createScheduleCmd } = require('./telegram/create_schedule.command');
 const { startCmd } = require('./telegram/start.command');
@@ -79,6 +82,15 @@ bot.onText(/\/create_schedule (.+)/, (message, match) => createScheduleCmd(bot, 
 bot.onText(/\/start/, (message) => startCmd(bot, message));
 bot.onText(/\/count_schedule/, (message) => countScheduleCmd(bot, message));
 bot.onText(/\/language/, (message) => languageCmd(message));
+
+setInterval(() => {
+  const date = new Date();
+  const secondNow = date.getSeconds();
+
+  if (secondNow === 0) {
+    checkLessonTime();
+  }
+}, 1000);
 
 bot.on('callback_query', async (message) => {
   const answer = message.data.split(':');
