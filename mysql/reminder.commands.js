@@ -9,11 +9,13 @@ const getChatsOnStartLesson = async (hour, minute) => {
       schedule_lessons.hour_end,
       schedule_lessons.minute_end,
       schedule_lessons.serial,
-      lesson_info.name
+      lesson_info.name,
+      schedule.name AS schedule_name
     FROM
       schedule_subscription,
       schedule_lessons,
-      lesson_info
+      lesson_info,
+      schedule
     WHERE
       hour_start = ?
     AND
@@ -22,6 +24,8 @@ const getChatsOnStartLesson = async (hour, minute) => {
       schedule_subscription.schedule_id = schedule_lessons.schedule_id
     AND
       lesson_info.id = schedule_lessons.lesson_info_id
+    AND
+      schedule.id = schedule_lessons.schedule_id
   `;
 
   const [rows] = await connectionPool.query(sql, [
@@ -41,11 +45,13 @@ const getChatsOnEndLesson = async (hour, minute) => {
       schedule_lessons.hour_end,
       schedule_lessons.minute_end,
       schedule_lessons.serial,
-      lesson_info.name
+      lesson_info.name,
+      schedule.name AS schedule_name
     FROM
       schedule_subscription,
       schedule_lessons,
-      lesson_info
+      lesson_info,
+      schedule
     WHERE
       hour_end = ?
     AND
@@ -54,6 +60,8 @@ const getChatsOnEndLesson = async (hour, minute) => {
       schedule_subscription.schedule_id = schedule_lessons.schedule_id
     AND
       lesson_info.id = schedule_lessons.lesson_info_id
+    AND
+      schedule.id = schedule_lessons.schedule_id
   `;
 
   const [rows] = await connectionPool.query(sql, [

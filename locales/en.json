@@ -32,5 +32,8 @@
 	"/_error": "The name must not start with /",
 	"auth_success": "🌎\nYou have successfully logged in to your browser.\nYour token has been activated and is no longer available.",
 	"click_auth": "For authorization go to the browser.\nAuthorization will be available for only 5 minutes.",
-	"chat_error": "❌\nSorry, the bot is not available in chats, but we are working on it!"
+	"chat_error": "❌\nSorry, the bot is not available in chats, but we are working on it!",
+	"notification_message": "🔊\nYou received a notification from the schedule: %s",
+	"start_lesson": "🔴 Lesson has begun:\n%s\n\nStart time: %s\nEnd time: %s",
+	"end_lesson": "🟢 The lesson is over:\n%s\n\nEnd time: %s"
 }
